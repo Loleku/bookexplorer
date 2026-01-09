@@ -6,6 +6,26 @@ data class SubjectResponse(
     val works: List<BookWork>
 )
 
+data class SearchResponse(
+    val docs: List<SearchDoc>
+)
+
+data class SearchDoc(
+    val key: String,
+    val title: String,
+    @SerializedName("author_name") val authorNames: List<String>?,
+    @SerializedName("cover_i") val coverI: Long?
+)
+
+fun SearchDoc.toBookWork(): BookWork {
+    return BookWork(
+        key = key,
+        title = title,
+        authors = authorNames?.map { Author(it) } ?: emptyList(),
+        coverId = coverI
+    )
+}
+
 data class BookWork(
     val key: String,
     val title: String,
