@@ -4,6 +4,7 @@ import com.example.bookexplorer.data.api.OpenLibraryApi
 import com.example.bookexplorer.data.local.FavoritesDataStore
 import com.example.bookexplorer.data.model.BookWork
 import com.example.bookexplorer.data.model.WorkDetailResponse
+import com.example.bookexplorer.data.model.toBookWork
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -27,6 +28,15 @@ class BookRepository(private val favoritesDataStore: FavoritesDataStore) {
         return try {
             val response = api.getFictionBooks(offset = offset)
             Result.success(response.works)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun searchBooks(query: String, page: Int): Result<List<BookWork>> {
+        return try {
+            val response = api.searchBooks(query, page)
+            Result.success(response.docs.map { it.toBookWork() })
         } catch (e: Exception) {
             Result.failure(e)
         }
